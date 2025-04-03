@@ -90,7 +90,9 @@ impl TokenHandler {
                 ',' => println!("COMMA , null"),
                 '.' => println!("DOT . null"),
                 ';' => println!("SEMICOLON ; null"),
-                '/' => {}
+                '/' => {
+                    prev_char = Some('/');
+                }
                 '>' => {}
                 '<' => {}
                 '!' => {}
@@ -106,7 +108,10 @@ impl TokenHandler {
             }
         }
 
-        if let Some('=') = prev_char {
+        // Handle any remaining character in prev_char
+        if let Some('/') = prev_char {
+            println!("SLASH / null");
+        } else if let Some('=') = prev_char {
             println!("EQUAL = null");
         }
 
