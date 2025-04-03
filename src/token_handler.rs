@@ -21,14 +21,38 @@ impl TokenHandler {
     let mut prev_char: Option<char> = None; // Track the previous character
 
     for c in file_contents.chars() {
-        if let Some('=') = prev_char {
-            if c == '=' {
-                println!("EQUAL_EQUAL == null");
-                prev_char = None; // Reset after handling "=="
-                continue;
-            } else {
-                println!("EQUAL = null");
+        // if let Some('=') = prev_char {
+        //     if c == '=' {
+        //         println!("EQUAL_EQUAL == null");
+        //         prev_char = None; // Reset after handling "=="
+        //         continue;
+        //     } else {
+        //         println!("EQUAL = null");
+        //     
+        // }
+
+        match prev_char {
+            Some('=') => {
+                // Handle the case where the previous character was '='
+                if c == '=' {
+                    println!("EQUAL_EQUAL == null");
+                    prev_char = None; // Reset after handling "=="
+                    continue;
+                } else {
+                    println!("EQUAL = null");
+                }
             }
+            Some('!') => {
+                // Handle the case where the previous character was '!'
+                if c == '=' {
+                    println!("BANG_EQUAL != null");
+                    prev_char = None; // Reset after handling "!="
+                    continue;
+                } else {
+                    println!("BANG ! null");
+                }
+            }
+            _ => {}
         }
 
         prev_char = Some(c);
@@ -45,13 +69,12 @@ impl TokenHandler {
             '.' => println!("DOT . null"),
             '/' => println!("SLASH / null"),
             ';' => println!("SEMICOLON ; null"),
+            '!' => {}
             '0'..='9' => println!("NUMBER {} {c}", c),
             '\n' => {
                 line_number += 1;
             },
-            '=' => {
-                // Do nothing here; "=" is handled above
-            }
+            '=' => {}
             _ => {
                 eprintln!("[line {line_number}] Error: Unexpected character: {c}");
                 has_error = true;
