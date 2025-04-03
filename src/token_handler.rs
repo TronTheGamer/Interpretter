@@ -93,14 +93,21 @@ impl TokenHandler {
                 '/' => {
                     prev_char = Some('/');
                 }
-                '>' => {}
-                '<' => {}
-                '!' => {}
+                '>' => {
+                    prev_char = Some('>');
+                }
+                '<' => {
+                    prev_char = Some('<');
+                }
+                '!' => {
+                    prev_char = Some('!');
+                }
                 '=' => {}
                 '0'..='9' => println!("NUMBER {} {c}", c),
                 '\n' => {
                     line_number += 1;
                 }
+                ' ' | '\r' | '\t' => {}
                 _ => {
                     eprintln!("[line {line_number}] Error: Unexpected character: {c}");
                     has_error = true;
