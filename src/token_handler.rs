@@ -21,15 +21,6 @@ impl TokenHandler {
     let mut prev_char: Option<char> = None; // Track the previous character
 
     for c in file_contents.chars() {
-        // if let Some('=') = prev_char {
-        //     if c == '=' {
-        //         println!("EQUAL_EQUAL == null");
-        //         prev_char = None; // Reset after handling "=="
-        //         continue;
-        //     } else {
-        //         println!("EQUAL = null");
-        //     
-        // }
 
         match prev_char {
             Some('=') => {
@@ -52,6 +43,26 @@ impl TokenHandler {
                     println!("BANG ! null");
                 }
             }
+            Some('>') => {
+                // Handle the case where the previous character was '>'
+                if c == '=' {
+                    println!("GREATER_EQUAL >= null");
+                    prev_char = None; // Reset after handling ">="
+                    continue;
+                } else {
+                    println!("GREATER > null");
+                }
+            }
+            Some('<') => {
+                // Handle the case where the previous character was '<'
+                if c == '=' {
+                    println!("LESS_EQUAL <= null");
+                    prev_char = None; // Reset after handling "<="
+                    continue;
+                } else {
+                    println!("LESS < null");
+                }
+            }
             _ => {}
         }
 
@@ -69,12 +80,17 @@ impl TokenHandler {
             '.' => println!("DOT . null"),
             '/' => println!("SLASH / null"),
             ';' => println!("SEMICOLON ; null"),
+            
+            // Multi-char tokens
+            '>' => {}
+            '<' => {}
             '!' => {}
+            '=' => {}
+
             '0'..='9' => println!("NUMBER {} {c}", c),
             '\n' => {
                 line_number += 1;
             },
-            '=' => {}
             _ => {
                 eprintln!("[line {line_number}] Error: Unexpected character: {c}");
                 has_error = true;
