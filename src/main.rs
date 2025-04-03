@@ -1,7 +1,7 @@
 use std::env;
 use std::fs;
 use std::io::{self, Write};
-
+use std::process::exit;
 
 /// Scanner function to tokenize the input string
 /// # Arguments
@@ -32,7 +32,10 @@ fn scan_token(file_contents: &str) {
             ';' => println!("SEMICOLON ; null"),
             '0'..='9' => println!("NUMBER {} {c}", c),
             '\n' => {line_number += 1;},
-            _ => println!("[line {line_number}] Error: Unexpected character: {c}"),
+            _ => {
+                println!("[line {line_number}] Error: Unexpected character: {c}");
+                exit(65);
+            },
         }
     }
     println!("EOF  null");
