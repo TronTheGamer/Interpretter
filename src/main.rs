@@ -9,8 +9,8 @@ fn scan_token(file_contents: &str) {
     // For now, it just prints "EOF null" to indicate end of file
     for c in file_contents.chars(){
         match c {
-            '(' => println!("LEFT_PAREN  ( null"),
-            ')' => println!("RIGHT_PAREN  ) null"),
+            '(' => println!("LEFT_PAREN ( null"),
+            ')' => println!("RIGHT_PAREN ) null"),
             _ => {},
         }
     }
