@@ -16,6 +16,7 @@ fn scan_token(file_contents: &str) {
     // Placeholder for the scanner implementation
     // This function will tokenize the input string and print tokens
     // For now, it just prints "EOF null" to indicate end of file
+    let mut line_number = 1;
     for c in file_contents.chars(){
         match c {
             '(' => println!("LEFT_PAREN ( null"),
@@ -30,7 +31,8 @@ fn scan_token(file_contents: &str) {
             '/' => println!("SLASH / null"),
             ';' => println!("SEMICOLON ; null"),
             '0'..='9' => println!("NUMBER {} {c}", c),
-            _ => {},
+            '\n' => {line_number += 1;},
+            _ => println!("[line {line_number}] Error: Unexpected character: {c}"),
         }
     }
     println!("EOF  null");
