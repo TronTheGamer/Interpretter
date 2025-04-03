@@ -24,6 +24,43 @@ impl TokenHandler {
 
         while let Some(c) = chars.next() {
             match prev_char {
+                Some('=') => {
+                    if c == '=' {
+                        println!("EQUAL = null");
+                        prev_char = None;
+                        continue;
+                    } else {
+                        println!("EQUAL = null");
+                    }
+                }
+                Some('!') => {
+                    if c == '=' {
+                        println!("BANG_EQUAL != null");
+                        prev_char = None;
+                        continue;
+                    } else {
+                        println!("BANG ! null");
+                    }
+                }
+                Some('<') => {
+                    if c == '=' {
+                        println!("LESS_EQUAL <= null");
+                        prev_char = None;
+                        continue;
+                    } else {
+                        println!("LESS < null");
+                    }
+                }
+                Some('>') => {
+                    if c == '=' {
+                        println!("GREATER_EQUAL >= null");
+                        prev_char = None;
+                        continue;
+                    } else {
+                        println!("GREATER > null");
+                    }
+                }
+                                
                 Some('/') => {
                     if c == '/' {
                         // Single-line comment, skip to the end of the line
