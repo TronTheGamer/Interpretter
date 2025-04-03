@@ -120,6 +120,12 @@ impl TokenHandler {
             println!("SLASH / null");
         } else if let Some('=') = prev_char {
             println!("EQUAL = null");
+        } else if let Some('<') = prev_char {
+            println!("LESS < null");
+        } else if let Some('>') = prev_char {
+            println!("GREATER > null");
+        } else if let Some('!') = prev_char {
+            println!("BANG ! null");
         }
 
         println!("EOF  null");
