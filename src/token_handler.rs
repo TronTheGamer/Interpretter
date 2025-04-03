@@ -63,6 +63,20 @@ impl TokenHandler {
                     println!("LESS < null");
                 }
             }
+            Some('/') =>{
+                // Handle the case where the previous character was '/'
+                if c == '/' {
+                    // Single-line comment, skip to the end of the line
+                    while let Some(next_char) = file_contents.chars().next() {
+                        if next_char == '\n' {
+                            break;
+                        }
+                    }
+                    continue;
+                } else {
+                    println!("SLASH / null");
+                }
+            }
             _ => {}
         }
 
@@ -78,10 +92,10 @@ impl TokenHandler {
             '-' => println!("MINUS - null"),
             ',' => println!("COMMA , null"),
             '.' => println!("DOT . null"),
-            '/' => println!("SLASH / null"),
             ';' => println!("SEMICOLON ; null"),
             
             // Multi-char tokens
+            '/' => {}
             '>' => {}
             '<' => {}
             '!' => {}
