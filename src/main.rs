@@ -3,6 +3,15 @@ use std::fs;
 use std::io::{self, Write};
 
 
+/// Scanner function to tokenize the input string
+/// # Arguments
+/// * `file_contents` - A string slice that holds the contents of the file to be tokenized
+/// # Behavior
+/// This function will scan the input string and print tokens to the standard output.
+/// It will print "EOF null" to indicate the end of the file.
+/// Prints in the following format:
+/// * '<TOKEN_TYPE> <LEXEM> <LITERAL>'
+/// * `LEFT_PAREN ( null`
 fn scan_token(file_contents: &str) {
     // Placeholder for the scanner implementation
     // This function will tokenize the input string and print tokens
@@ -13,12 +22,35 @@ fn scan_token(file_contents: &str) {
             ')' => println!("RIGHT_PAREN ) null"),
             '{' => println!("LEFT_BRACE {{ null"),
             '}' => println!("RIGHT_BRACE }} null"),
+            '*' => println!("STAR * null"),
+            '+' => println!("PLUS + null"),
+            '-' => println!("MINUS - null"),
+            ',' => println!("COMMA , null"),
+            '.' => println!("DOT . null"),
+            '/' => println!("SLASH / null"),
+            '0'..='9' => println!("NUMBER {} {c}", c),
             _ => {},
         }
     }
     println!("EOF  null");
 }
 
+/// Entry point of the program.
+///
+/// This function parses command-line arguments and executes the appropriate command.
+/// Currently, it supports the "tokenize" command, which reads a file and tokenizes its contents.
+///
+/// # Usage
+///
+/// ```bash
+/// <program_name> tokenize <filename>
+/// ```
+///
+/// # Behavior
+///
+/// If the "tokenize" command is provided with a valid filename, the program reads the file
+/// and passes its contents to the `scan_token` function for tokenization. If the command
+/// or filename is invalid, an error message is printed to `stderr`.
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
