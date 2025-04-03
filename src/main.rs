@@ -32,7 +32,7 @@ fn main() {
 
     let command = &args[1];
     let filename = &args[2];
-    let handler = TokenHandler;
+    let mut handler = TokenHandler {..Default::default()};
 
     match command.as_str() {
         /*

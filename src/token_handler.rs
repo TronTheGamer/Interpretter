@@ -1,7 +1,22 @@
 use std::process::exit;
+use std::iter::Peekable;
+use std::str::Chars;
 
 /// A struct to handle tokenization logic.
-pub struct TokenHandler;
+pub struct TokenHandler {
+    pub line_number: i32,
+    pub has_error: bool,
+}
+
+impl Default for TokenHandler {
+    fn default() -> Self {
+        TokenHandler {
+            line_number: 1,
+            has_error: false,
+        }
+    }
+}
+
 
 impl TokenHandler {
 
@@ -15,9 +30,9 @@ impl TokenHandler {
     /// This function scans through each character in the input string and matches it against
     /// specific token patterns (e.g., parentheses, braces). For each match, it prints the token
     /// type and value. At the end of the input, it prints "EOF null" to indicate the end of the file.
-    pub fn scan_token(&self, file_contents: &str) {
-        let mut line_number = 1;
-        let mut has_error = false;
+    pub fn scan_token(&mut self, file_contents: &str) {
+        self.line_number = 1;
+        self.has_error = false;
         let mut prev_char: Option<char> = None; // Track the previous character
 
         let mut chars = file_contents.chars().peekable(); // Use a peekable iterator
@@ -65,7 +80,7 @@ impl TokenHandler {
                         // Single-line comment, skip to the end of the line
                         while let Some(next_char) = chars.next() {
                             if next_char == '\n' {
-                                line_number += 1;
+                                self.line_number += 1;
                                 break;
                             }
                         }
@@ -106,12 +121,24 @@ impl TokenHandler {
                 '=' => {}
                 '0'..='9' => println!("NUMBER {} {c}", c),
                 '\n' => {
-                    line_number += 1;
+                    self.line_number += 1;
                 }
                 ' ' | '\r' | '\t' => {}
+
+                '"' => {
+                    let str_literal: Option<String> = self.str_handle(&mut chars);
+                    if let Some(literal) = str_literal {
+                        println!("STRING \"{}\" {}", literal, literal);
+                    } else {
+                        // Handle error in string literal
+                        eprintln!("[line {}] Error: Unterminated string", self.line_number);
+                        self.has_error = true;
+                    }
+                }
+
                 _ => {
-                    eprintln!("[line {line_number}] Error: Unexpected character: {c}");
-                    has_error = true;
+                    eprintln!("[line {}] Error: Unexpected character: {c}",self.line_number);
+                    self.has_error = true;
                 }
             }
         }
@@ -131,8 +158,40 @@ impl TokenHandler {
 
         println!("EOF  null");
 
-        if has_error {
+        if self.has_error {
             exit(65);
         }
+    }
+
+    pub fn str_handle(&mut self, chars: &mut Peekable<Chars>)->Option<String> {
+        let mut string_literal: String = String::new();
+        while let Some(next_char) = chars.next() {
+            match next_char {
+                '"' => {
+                    return Some(string_literal);
+                }
+                '\\' => {
+                    if let Some(escaped_char) = chars.next() {
+                        match escaped_char {
+                            'n' => string_literal.push('\n'),
+                            't' => string_literal.push('\t'),
+                            '\\' => string_literal.push('\\'),
+                            '"' => string_literal.push('"'),
+                            _ => string_literal.push(escaped_char),
+                        }
+                    }
+                    continue;
+                }
+                '\n' => {
+                    self.has_error = true;
+                    return None;
+                }
+                _ => {
+                    string_literal.push(next_char);
+                }
+            }
+            
+    }
+    return None;
     }
 }
