@@ -1,49 +1,11 @@
 use std::env;
 use std::fs;
 use std::io::{self, Write};
-use std::process::exit;
 
-/// Scanner function to tokenize the input string
-/// # Arguments
-/// * `file_contents` - A string slice that holds the contents of the file to be tokenized
-/// # Behavior
-/// This function will scan the input string and print tokens to the standard output.
-/// It will print "EOF null" to indicate the end of the file.
-/// Prints in the following format:
-/// * '<TOKEN_TYPE> <LEXEM> <LITERAL>'
-/// * `LEFT_PAREN ( null`
-fn scan_token(file_contents: &str) {
-    // Placeholder for the scanner implementation
-    // This function will tokenize the input string and print tokens
-    // For now, it just prints "EOF null" to indicate end of file
-    let mut line_number = 1;
-    let mut has_error = false;
-    for c in file_contents.chars(){
-        match c {
-            '(' => println!("LEFT_PAREN ( null"),
-            ')' => println!("RIGHT_PAREN ) null"),
-            '{' => println!("LEFT_BRACE {{ null"),
-            '}' => println!("RIGHT_BRACE }} null"),
-            '*' => println!("STAR * null"),
-            '+' => println!("PLUS + null"),
-            '-' => println!("MINUS - null"),
-            ',' => println!("COMMA , null"),
-            '.' => println!("DOT . null"),
-            '/' => println!("SLASH / null"),
-            ';' => println!("SEMICOLON ; null"),
-            '0'..='9' => println!("NUMBER {} {c}", c),
-            '\n' => {line_number += 1;},
-            _ => {
-                eprintln!("[line {line_number}] Error: Unexpected character: {c}");
-                has_error = true;
-            },
-        }
-    }
-    println!("EOF  null");
-    if(has_error){
-        exit(65);
-    }
-}
+// -------------------Imports-------------------------//
+mod token_handler;
+use token_handler::TokenHandler;
+
 
 /// Entry point of the program.
 ///
@@ -70,6 +32,7 @@ fn main() {
 
     let command = &args[1];
     let filename = &args[2];
+    let handler = TokenHandler;
 
     match command.as_str() {
         /*
@@ -90,7 +53,7 @@ fn main() {
             // Uncomment this block to pass the first stage
             if !file_contents.is_empty() {
                 // panic!("Scanner not implemented");
-                scan_token(&file_contents);
+                handler.scan_token(&file_contents);
 
             } else {
                 println!("EOF  null"); // Placeholder, remove this line when implementing the scanner
