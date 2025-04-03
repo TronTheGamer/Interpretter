@@ -131,7 +131,7 @@ impl TokenHandler {
                         println!("STRING \"{}\" {}", literal, literal);
                     } else {
                         // Handle error in string literal
-                        eprintln!("[line {}] Error: Unterminated string", self.line_number);
+                        eprintln!("[line {}] Error: Unterminated string.", self.line_number);
                         self.has_error = true;
                     }
                 }
