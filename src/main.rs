@@ -33,7 +33,7 @@ fn scan_token(file_contents: &str) {
             '0'..='9' => println!("NUMBER {} {c}", c),
             '\n' => {line_number += 1;},
             _ => {
-                println!("[line {line_number}] Error: Unexpected character: {c}");
+                eprintln!("[line {line_number}] Error: Unexpected character: {c}");
                 exit(65);
             },
         }
