@@ -26,7 +26,7 @@ impl TokenHandler {
             match prev_char {
                 Some('=') => {
                     if c == '=' {
-                        println!("EQUAL = null");
+                        println!("EQUAL_EQUAL == null");
                         prev_char = None;
                         continue;
                     } else {
@@ -60,7 +60,6 @@ impl TokenHandler {
                         println!("GREATER > null");
                     }
                 }
-                                
                 Some('/') => {
                     if c == '/' {
                         // Single-line comment, skip to the end of the line
