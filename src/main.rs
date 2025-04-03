@@ -35,7 +35,7 @@ fn scan_token(file_contents: &str) {
             '\n' => {line_number += 1;},
             _ => {
                 eprintln!("[line {line_number}] Error: Unexpected character: {c}");
-                exit(65);
+                has_error = true;
             },
         }
     }
