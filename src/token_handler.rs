@@ -65,6 +65,7 @@ impl TokenHandler {
                         // Single-line comment, skip to the end of the line
                         while let Some(next_char) = chars.next() {
                             if next_char == '\n' {
+                                line_number += 1;
                                 break;
                             }
                         }
