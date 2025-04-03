@@ -121,7 +121,11 @@ impl TokenHandler {
                 '=' => {}
                 '0'..='9' => {
                     let (num_str, num_value) = self.num_handle(&mut chars, c);
-                    println!("NUMBER {} {:.1}", num_str, num_value);
+                    if num_value.fract() == 0.0 {
+                        println!("NUMBER {} {:.1}", num_str, num_value);
+                    } else {
+                        println!("NUMBER {} {}", num_str, num_value);
+                    }
                 }
                 '\n' => {
                     self.line_number += 1;
