@@ -39,7 +39,7 @@ fn scan_token(file_contents: &str) {
             },
         }
     }
-    println!("EOF null");
+    println!("EOF  null");
     if(has_error){
         exit(65);
     }
