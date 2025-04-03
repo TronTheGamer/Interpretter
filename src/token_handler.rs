@@ -119,7 +119,10 @@ impl TokenHandler {
                     prev_char = Some('!');
                 }
                 '=' => {}
-                '0'..='9' => println!("NUMBER {} {c}", c),
+                '0'..='9' => {
+                    let (num_str, num_value) = self.num_handle(&mut chars, c);
+                    println!("NUMBER {} {:.1}", num_str, num_value);
+                }
                 '\n' => {
                     self.line_number += 1;
                 }
@@ -194,4 +197,25 @@ impl TokenHandler {
     }
     return None;
     }
+
+    pub fn num_handle(&mut self, chars: &mut Peekable<Chars>, c: char) -> (String, f64) {
+
+        let mut num_str: String = String::new();
+        num_str.push(c);
+        while let Some(next_char) = chars.peek() {
+            if next_char.is_digit(10) || *next_char == '.' {
+                num_str.push(*next_char);
+                chars.next();
+            } else {
+                break;
+            }
+        }
+
+        let num_value: f64 = num_str.parse().unwrap_or(0.0);     
+
+        return (num_str, num_value);   
+             
+    }
+
+
 }
