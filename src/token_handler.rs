@@ -63,7 +63,7 @@ impl TokenHandler {
                     println!("LESS < null");
                 }
             }
-            Some('/') =>{
+            Some('/') => {
                 // Handle the case where the previous character was '/'
                 if c == '/' {
                     // Single-line comment, skip to the end of the line
