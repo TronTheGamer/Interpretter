@@ -28,6 +28,7 @@ fn scan_token(file_contents: &str) {
             ',' => println!("COMMA , null"),
             '.' => println!("DOT . null"),
             '/' => println!("SLASH / null"),
+            ';' => println!("SEMICOLON ; null"),
             '0'..='9' => println!("NUMBER {} {c}", c),
             _ => {},
         }
