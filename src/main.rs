@@ -17,6 +17,7 @@ fn scan_token(file_contents: &str) {
     // This function will tokenize the input string and print tokens
     // For now, it just prints "EOF null" to indicate end of file
     let mut line_number = 1;
+    let mut has_error = false;
     for c in file_contents.chars(){
         match c {
             '(' => println!("LEFT_PAREN ( null"),
@@ -38,7 +39,10 @@ fn scan_token(file_contents: &str) {
             },
         }
     }
-    println!("EOF  null");
+    println!("EOF null");
+    if(has_error){
+        exit(65);
+    }
 }
 
 /// Entry point of the program.
