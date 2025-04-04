@@ -6,6 +6,7 @@ use std::str::Chars;
 pub struct TokenHandler {
     pub line_number: i32,
     pub has_error: bool,
+    tokens: Vec<String>,
 }
 
 impl Default for TokenHandler {
@@ -13,6 +14,7 @@ impl Default for TokenHandler {
         TokenHandler {
             line_number: 1,
             has_error: false,
+             tokens: Vec::new(),
         }
     }
 }
@@ -42,37 +44,45 @@ impl TokenHandler {
                 Some('=') => {
                     if c == '=' {
                         println!("EQUAL_EQUAL == null");
+                        self.add_token("EQUAL_EQUAL == null".to_string());
                         prev_char = None;
                         continue;
                     } else {
                         println!("EQUAL = null");
+                        self.add_token("EQUAL = null".to_string());
                     }
                 }
                 Some('!') => {
                     if c == '=' {
                         println!("BANG_EQUAL != null");
+                        self.add_token("BANG_EQUAL != null".to_string());
                         prev_char = None;
                         continue;
                     } else {
                         println!("BANG ! null");
+                        self.add_token("BANG ! null".to_string());
                     }
                 }
                 Some('<') => {
                     if c == '=' {
                         println!("LESS_EQUAL <= null");
+                        self.add_token("LESS_EQUAL <= null".to_string());
                         prev_char = None;
                         continue;
                     } else {
                         println!("LESS < null");
+                        self.add_token("LESS < null".to_string());
                     }
                 }
                 Some('>') => {
                     if c == '=' {
                         println!("GREATER_EQUAL >= null");
+                        self.add_token("GREATER_EQUAL >= null".to_string());
                         prev_char = None;
                         continue;
                     } else {
                         println!("GREATER > null");
+                        self.add_token("GREATER > null".to_string());
                     }
                 }
                 Some('/') => {
@@ -88,6 +98,7 @@ impl TokenHandler {
                         continue;
                     } else {
                         println!("SLASH / null");
+                        self.add_token("SLASH / null".to_string());
                     }
                 }
                 _ => {}
@@ -96,16 +107,16 @@ impl TokenHandler {
             prev_char = Some(c);
 
             match c {
-                '(' => println!("LEFT_PAREN ( null"),
-                ')' => println!("RIGHT_PAREN ) null"),
-                '{' => println!("LEFT_BRACE {{ null"),
-                '}' => println!("RIGHT_BRACE }} null"),
-                '*' => println!("STAR * null"),
-                '+' => println!("PLUS + null"),
-                '-' => println!("MINUS - null"),
-                ',' => println!("COMMA , null"),
-                '.' => println!("DOT . null"),
-                ';' => println!("SEMICOLON ; null"),
+                '(' => {println!("LEFT_PAREN ( null"); self.add_token("LEFT_PAREN ( null".to_string());},
+                ')' => {println!("RIGHT_PAREN ) null"); self.add_token("RIGHT_PAREN ) null".to_string());},
+                '{' => {println!("LEFT_BRACE {{ null"); self.add_token("LEFT_BRACE {{ null".to_string());},
+                '}' => {println!("RIGHT_BRACE }} null"); self.add_token("RIGHT_BRACE }} null".to_string());},
+                '*' => {println!("STAR * null"); self.add_token("STAR * null".to_string());},
+                '+' => {println!("PLUS + null"); self.add_token("PLUS + null".to_string());},
+                '-' => {println!("MINUS - null"); self.add_token("MINUS - null".to_string());},
+                ',' => {println!("COMMA , null"); self.add_token("COMMA , null".to_string());},
+                '.' => {println!("DOT . null"); self.add_token("DOT . null".to_string());},
+                ';' => {println!("SEMICOLON ; null"); self.add_token("SEMICOLON ; null".to_string());},
                 '/' => {
                     prev_char = Some('/');
                 }
@@ -127,6 +138,9 @@ impl TokenHandler {
                         println!("NUMBER {} {}", num_str, num_value);
                     }
                 }
+                'a'..='z' | 'A'..='Z' | '_' => {
+                    let identifier = self.indentifier_handle(&mut chars, c);
+                }
                 '\n' => {
                     self.line_number += 1;
                 }
@@ -136,6 +150,7 @@ impl TokenHandler {
                     let str_literal: Option<String> = self.str_handle(&mut chars);
                     if let Some(literal) = str_literal {
                         println!("STRING \"{}\" {}", literal, literal);
+                        self.add_token(format!("STRING \"{}\" {}", literal, literal));
                     } else {
                         // Handle error in string literal
                         eprintln!("[line {}] Error: Unterminated string.", self.line_number);
@@ -153,16 +168,21 @@ impl TokenHandler {
         // Handle any remaining character in prev_char
         if let Some('/') = prev_char {
             println!("SLASH / null");
+            self.add_token("SLASH / null".to_string());
         } else if let Some('=') = prev_char {
             println!("EQUAL = null");
+            self.add_token("EQUAL = null".to_string());
         } else if let Some('<') = prev_char {
             println!("LESS < null");
+            self.add_token("LESS < null".to_string());
         } else if let Some('>') = prev_char {
             println!("GREATER > null");
+            self.add_token("GREATER > null".to_string());
         } else if let Some('!') = prev_char {
             println!("BANG ! null");
+            self.add_token("BANG ! null".to_string());
         }
-
+        
         println!("EOF  null");
 
         if self.has_error {
@@ -170,7 +190,7 @@ impl TokenHandler {
         }
     }
 
-    pub fn str_handle(&mut self, chars: &mut Peekable<Chars>)->Option<String> {
+    fn str_handle(&mut self, chars: &mut Peekable<Chars>)->Option<String> {
         let mut string_literal: String = String::new();
         while let Some(next_char) = chars.next() {
             match next_char {
@@ -202,7 +222,7 @@ impl TokenHandler {
     return None;
     }
 
-    pub fn num_handle(&mut self, chars: &mut Peekable<Chars>, c: char) -> (String, f64) {
+    fn num_handle(&mut self, chars: &mut Peekable<Chars>, c: char) -> (String, f64) {
 
         let mut num_str: String = String::new();
         num_str.push(c);
@@ -215,10 +235,60 @@ impl TokenHandler {
             }
         }
 
-        let num_value: f64 = num_str.parse().unwrap_or(0.0);     
+        let num_value: f64 = num_str.parse().unwrap_or(0.0);
+
+        if num_value.fract() == 0.0 {
+            let _token = format!("NUMBER {} {:.1}", num_str, num_value);
+            self.add_token(_token);
+        } else {
+            let _token = format!("NUMBER {} {}", num_str, num_value);
+            self.add_token(_token);
+        }     
 
         return (num_str, num_value);   
              
+    }
+
+    fn add_token(&mut self, token: String) {
+        // Adds a token to the tokens vector.
+        self.tokens.push(token);
+    }
+
+    pub fn get_tokens(&self) -> &Vec<String> {
+        // Returns a reference to the tokens vector.
+        return &self.tokens
+    }
+
+    fn indentifier_handle(&mut self, chars: &mut Peekable<Chars>, c: char) -> String {
+        let mut identifier: String = String::new();
+        identifier.push(c);
+        while let Some(next_char) = chars.peek() {
+            if next_char.is_alphanumeric() || *next_char == '_' {
+                identifier.push(*next_char);
+                chars.next();
+            } else {
+                break;
+            }
+        }
+
+        let _token: String = if self.is_keyword(&identifier) {
+            format!("KEYWORD {} null", identifier)
+        } else {
+            format!("IDENTIFIER {} null", identifier)
+        };
+        self.add_token(_token.clone());
+
+        println!("{}",_token.clone());
+
+        return identifier;
+    }
+    fn is_keyword(&self, identifier: &str) -> bool {
+        // Check if the identifier is a keyword
+        match identifier {
+            "and" | "class" | "else" | "false" | "for" | "fun" | "if" | "nil" | "or" | "print" |
+            "return" | "super" | "this" | "true" | "var" | "while" => true,
+            _ => false,
+        }
     }
 
 
