@@ -272,7 +272,7 @@ impl TokenHandler {
         }
 
         let _token: String = if self.is_keyword(&identifier) {
-            format!("KEYWORD {} null", identifier)
+            format!("{} {} null",identifier.to_uppercase(), identifier)
         } else {
             format!("IDENTIFIER {} null", identifier)
         };
