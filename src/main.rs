@@ -55,6 +55,13 @@ fn main() {
                 // panic!("Scanner not implemented");
                 handler.scan_token(&file_contents);
 
+                // Debugging output -------------------------------------
+                let tokens = handler.get_tokens();
+                for token in tokens {
+                    println!("{}", token);
+                }
+                //-------------------------------------------------------
+
             } else {
                 println!("EOF  null"); // Placeholder, remove this line when implementing the scanner
             }

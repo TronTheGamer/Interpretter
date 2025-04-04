@@ -107,16 +107,16 @@ impl TokenHandler {
             prev_char = Some(c);
 
             match c {
-                '(' => {println!("LEFT_PAREN ( null"); self.add_token("LEFT_PAREN ( null".to_string());},
-                ')' => {println!("RIGHT_PAREN ) null"); self.add_token("RIGHT_PAREN ) null".to_string());},
-                '{' => {println!("LEFT_BRACE {{ null"); self.add_token("LEFT_BRACE {{ null".to_string());},
-                '}' => {println!("RIGHT_BRACE }} null"); self.add_token("RIGHT_BRACE }} null".to_string());},
-                '*' => {println!("STAR * null"); self.add_token("STAR * null".to_string());},
-                '+' => {println!("PLUS + null"); self.add_token("PLUS + null".to_string());},
-                '-' => {println!("MINUS - null"); self.add_token("MINUS - null".to_string());},
-                ',' => {println!("COMMA , null"); self.add_token("COMMA , null".to_string());},
-                '.' => {println!("DOT . null"); self.add_token("DOT . null".to_string());},
-                ';' => {println!("SEMICOLON ; null"); self.add_token("SEMICOLON ; null".to_string());},
+                '(' => {self.add_token("LEFT_PAREN ( null".to_string());},
+                ')' => {self.add_token("RIGHT_PAREN ) null".to_string());},
+                '{' => {self.add_token("LEFT_BRACE {{ null".to_string());},
+                '}' => {self.add_token("RIGHT_BRACE }} null".to_string());},
+                '*' => {self.add_token("STAR * null".to_string());},
+                '+' => {self.add_token("PLUS + null".to_string());},
+                '-' => {self.add_token("MINUS - null".to_string());},
+                ',' => {self.add_token("COMMA , null".to_string());},
+                '.' => {self.add_token("DOT . null".to_string());},
+                ';' => {self.add_token("SEMICOLON ; null".to_string());},
                 '/' => {
                     prev_char = Some('/');
                 }
@@ -131,15 +131,10 @@ impl TokenHandler {
                 }
                 '=' => {}
                 '0'..='9' => {
-                    let (num_str, num_value) = self.num_handle(&mut chars, c);
-                    if num_value.fract() == 0.0 {
-                        println!("NUMBER {} {:.1}", num_str, num_value);
-                    } else {
-                        println!("NUMBER {} {}", num_str, num_value);
-                    }
+                    self.num_handle(&mut chars, c);
                 }
                 'a'..='z' | 'A'..='Z' | '_' => {
-                    let identifier = self.indentifier_handle(&mut chars, c);
+                    self.indentifier_handle(&mut chars, c);
                 }
                 '\n' => {
                     self.line_number += 1;
@@ -153,13 +148,13 @@ impl TokenHandler {
                         self.add_token(format!("STRING \"{}\" {}", literal, literal));
                     } else {
                         // Handle error in string literal
-                        eprintln!("[line {}] Error: Unterminated string.", self.line_number);
+                        println!("[line {}] Error: Unterminated string.", self.line_number);
                         self.has_error = true;
                     }
                 }
 
                 _ => {
-                    eprintln!("[line {}] Error: Unexpected character: {c}",self.line_number);
+                    println!("[line {}] Error: Unexpected character: {c}",self.line_number);
                     self.has_error = true;
                 }
             }
@@ -184,6 +179,7 @@ impl TokenHandler {
         }
         
         println!("EOF  null");
+        self.add_token("EOF  null".to_string());
 
         if self.has_error {
             exit(65);
@@ -239,11 +235,14 @@ impl TokenHandler {
 
         if num_value.fract() == 0.0 {
             let _token = format!("NUMBER {} {:.1}", num_str, num_value);
-            self.add_token(_token);
+            self.add_token(_token.clone());
+            println!("{}",_token.clone());
         } else {
             let _token = format!("NUMBER {} {}", num_str, num_value);
-            self.add_token(_token);
-        }     
+            self.add_token(_token.clone());
+            println!("{}",_token.clone());
+        }
+    
 
         return (num_str, num_value);   
              
