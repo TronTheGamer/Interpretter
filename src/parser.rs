@@ -1,3 +1,6 @@
+use crate::TokenHandler;
+
+
 /// Represents a binary expression consisting of two sub-expressions and an operator.
 /// 
 /// # Fields
