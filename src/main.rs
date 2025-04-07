@@ -6,6 +6,12 @@ use std::io::{self, Write};
 mod token_handler;
 use token_handler::TokenHandler;
 
+mod parser;
+use parser::ParserHandler;
+// ---------------------------------------------------//
+
+
+/// A simple command-line program that tokenizes input from a file.
 
 /// Entry point of the program.
 ///
@@ -65,6 +71,24 @@ fn main() {
             } else {
                 println!("EOF  null"); // Placeholder, remove this line when implementing the scanner
             }
+        }
+
+        "parse" => {
+
+        let file_contents = fs::read_to_string(filename).unwrap_or_else(|_| {
+                writeln!(io::stderr(), "Failed to read file {}", filename).unwrap();
+                String::new()
+            });
+        
+        handler.scan_token(&file_contents);
+
+        let tokens = handler.get_tokens().clone();
+        let mut parser = ParserHandler::new(&tokens);
+
+        match parser.parse() {
+            Ok(ast) => println!("{:?}", ast),
+            Err(err) => eprintln!("Parse error: {}", err),
+        }
         }
         _ => {
             writeln!(io::stderr(), "Unknown command: {}", command).unwrap();
