@@ -16,7 +16,7 @@ pub enum Expr {
 impl Expr {
     pub fn evaluate(&self) -> String {
         match self {
-            Expr::Literal(value) => value.clone(),
+            Expr::Literal(value) => value.clone(), // Return the literal value directly
             Expr::Binary(left, op, right) => {
                 format!("({} {} {})", left.evaluate(), op, right.evaluate())
             }
@@ -85,5 +85,20 @@ impl ParserHandler {
             }
         }
         None
+    }
+}
+
+pub fn handle_command(command: &str, file_contents: &str) {
+    if command == "parse" {
+        let mut handler = TokenHandler::default();
+        handler.scan_token(&file_contents);
+
+        let tokens = handler.get_tokens().clone();
+        let mut parser = ParserHandler::new(&tokens);
+
+        match parser.parse() {
+            Ok(ast) => println!("{}", ast.evaluate()), // Use evaluate to print the result
+            Err(err) => eprintln!("Parse error: {}", err),
+        }
     }
 }
