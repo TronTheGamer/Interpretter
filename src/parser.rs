@@ -67,7 +67,8 @@ impl ParserHandler {
         if let Some(token) = self.tokens.pop() {
             match token.as_str() {
                 "true" | "false" | "nil" => Ok(Expr::Literal(token)),
-                _ => {
+                "EOF  null" => Ok(Expr::Literal("EOF null".to_string())),
+                _ => {  
                     if let Ok(_) = token.parse::<f64>() {
                         Ok(Expr::Literal(token))
                     } else {
