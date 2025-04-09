@@ -1,6 +1,5 @@
 use crate::TokenHandler;
 
-
 /// Represents a binary expression consisting of two sub-expressions and an operator.
 /// 
 /// # Fields
@@ -62,26 +61,6 @@ impl ParserHandler {
         Ok(expr)
     }
 
-    /// Parses a primary expression (e.g., literals like true, false, nil, or numbers).
-    fn parse_primary(&mut self) -> Result<Expr, String> {
-        if let Some(token) = self.tokens.pop() {
-            match token.as_str() {
-                "true" | "false" | "nil" => Ok(Expr::Literal(token)),
-                "EOF  null" => Ok(Expr::Literal("EOF null".to_string())),
-                _ => {  
-                    if let Ok(_) = token.parse::<f64>() {
-                        Ok(Expr::Literal(token))
-                    } else {
-                        Err(format!("Unexpected token: {}", token))
-                    }
-                }
-            }
-        } else {
-            Err("Unexpected end of input".to_string())
-        }
-    }
-
-    /// Matches and consumes a binary operator (e.g., +, -, etc.).
     fn match_operator(&mut self) -> Option<String> {
         if let Some(token) = self.tokens.last() {
             if ["+", "-", "*", "/"].contains(&token.as_str()) {
@@ -89,6 +68,19 @@ impl ParserHandler {
             }
         }
         None
+    }
+
+    /// Parses a primary expression (e.g., literals like true, false, nil, or numbers).
+    fn parse_primary(&mut self) -> Result<Expr, String> {
+        if let Some(token) = self.tokens.pop() {
+            match token.as_str() {
+                "true" | "false" | "nil" => Ok(Expr::Literal(token)),
+                _ if token.parse::<f64>().is_ok() => Ok(Expr::Literal(token)), // Handle numbers
+                _ => Err(format!("Unexpected token: {}", token)),
+            }
+        } else {
+            Err("No tokens to parse".to_string())
+        }
     }
 }
 
@@ -104,5 +96,73 @@ pub fn handle_command(command: &str, file_contents: &str) {
             Ok(ast) => println!("{}", ast.evaluate()), // Use evaluate to print the result
             Err(err) => eprintln!("Parse error: {}", err),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_true_literal() {
+        let tokens = vec!["true".to_string()];
+        let mut parser = ParserHandler::new(&tokens);
+        let result = parser.parse();
+        assert_eq!(result, Ok(Expr::Literal("true".to_string())));
+    }
+
+    #[test]
+    fn test_parse_false_literal() {
+        let tokens = vec!["false".to_string()];
+        let mut parser = ParserHandler::new(&tokens);
+        let result = parser.parse();
+        assert_eq!(result, Ok(Expr::Literal("false".to_string())));
+    }
+
+    #[test]
+    fn test_parse_nil_literal() {
+        let tokens = vec!["nil".to_string()];
+        let mut parser = ParserHandler::new(&tokens);
+        let result = parser.parse();
+        assert_eq!(result, Ok(Expr::Literal("nil".to_string())));
+    }
+
+    #[test]
+    fn test_parse_unexpected_token() {
+        let tokens = vec!["unexpected".to_string()];
+        let mut parser = ParserHandler::new(&tokens);
+        let result = parser.parse();
+        assert_eq!(result, Err("Unexpected token: unexpected".to_string()));
+    }
+
+    #[test]
+    fn test_parse_empty_input() {
+        let tokens: Vec<String> = vec![];
+        let mut parser = ParserHandler::new(&tokens);
+        let result = parser.parse();
+        assert_eq!(result, Err("No tokens to parse".to_string()));
+    }
+
+    #[test]
+    fn test_parse_number_literal() {
+        let tokens = vec!["42".to_string()];
+        let mut parser = ParserHandler::new(&tokens);
+        let result = parser.parse();
+        assert_eq!(result, Ok(Expr::Literal("42".to_string())));
+    }
+
+    #[test]
+    fn test_parse_binary_expression() {
+        let tokens = vec!["2".to_string(), "+".to_string(), "3".to_string()];
+        let mut parser = ParserHandler::new(&tokens);
+        let result = parser.parse();
+        assert_eq!(
+            result,
+            Ok(Expr::Binary(
+                Box::new(Expr::Literal("2".to_string())),
+                "+".to_string(),
+                Box::new(Expr::Literal("3".to_string()))
+            ))
+        );
     }
 }
